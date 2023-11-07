@@ -1,0 +1,4 @@
+com\itheima\mapreduce\WordCount.class
+com\itheima\mapreduce\WordCountMapper.class
+APP.class
+com\itheima\mapreduce\WordCountReducer.class
