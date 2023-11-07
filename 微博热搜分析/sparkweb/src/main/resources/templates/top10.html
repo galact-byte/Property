@@ -1,0 +1,74 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>top10</title>
+    <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js">
+    </script>
+    <script src="https://cdn.staticfile.org/echarts/4.3.0/echarts.min.js">
+    </script>
+</head>
+<body>
+<h1>微博热搜Top10</h1>
+<!--定义ID为main的<div />标签作为存放ECharts柱状图的容器-->
+<div id = "main" style = "width: 1000px;height: 800px;"></div>
+<script th:inline="javascript">
+    $(function () {
+        //在ID为main的标签中初始化ECharts实例
+        var myChart = echarts.init(document.getElementById('main'));
+        //获取Model对象传递到HTML的微博热搜Top10数据
+        var top10 = [[${top10}]];
+        console.log(top10)
+        var top10_options = [];
+        //指定ECharts柱状图模板的配置
+        myChart.setOption({
+            legend: {},
+            tooltip: {},
+            dataset: {
+                source: []
+            },
+            xAxis:{
+                type: 'category',
+                axisLabel: {
+                    interval: 0,
+                    rotate: 15,
+                    textStyle: {
+                        color: '#000',
+                        fontSize: 12
+                    }
+                }
+            },
+            yAxis: {},
+            series: [
+                {type: 'bar'},
+                {type: 'bar'},
+                {type: 'bar'},
+            ]
+        });
+        //显示ECharts柱状图模板的加载提示
+        myChart.showLoading();
+        //向数组top10_options中插入1条数据，这条数据为数组类型，包含4个值
+        top10_options.push(["weiboId",
+            "viewCount",
+            "shareCount",
+            "commitCount"]);
+        //遍历微博热搜Top10数据，将每一条数据以数组的形式插入数组top10_options
+        $.each(top10, function (index, value) {
+            top10_options.push([value.weiboId,
+                parseInt(value.viewCount),
+                parseInt(value.shareCount),
+                parseInt(value.commitCount)]);
+        })
+        //隐藏ECharts柱状图模板的加载显示
+        myChart.hideLoading();
+        //指定ECharts柱状图模板的数据为数组top10_options
+        myChart.setOption({
+            dataset: {
+                source: top10_options
+            }
+        });
+    });
+</script>
+</body>
+</html>
