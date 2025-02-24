@@ -43,6 +43,7 @@
 ![img](https://raw.githubusercontent.com/galact-byte/Property/refs/heads/main/CE/Pasted%20image%2020231210131115.png)
 
 上面菜单栏工具里选择自动汇编(或者`crtl+a`)，模板菜单选择代码注入，一般会自动录入，选择确定后对代码进行修改，`sub`在汇编语言中执行减法操作，删除或者注释掉扣一点，变为`ADD [地址],数字`，再输出就把打一下扣一点变为回复几点了。*(切记，一定要看正确再改，乱改容易崩溃)*。
+
 ![img](https://raw.githubusercontent.com/galact-byte/Property/refs/heads/main/CE/Pasted%20image%2020231210131032.png)
 
 7.多级指针
@@ -67,18 +68,25 @@
 首先搜索到所有玩家，找出是什么改写地址，进行空值替换发现会使四个角色都是无敌，但其中有两个是敌人，所以不管用。
 ![img](https://raw.githubusercontent.com/galact-byte/Property/refs/heads/main/CE/Pasted%20image%2020231210230731.png)
 ![img](https://raw.githubusercontent.com/galact-byte/Property/refs/heads/main/CE/Pasted%20image%2020231210230808.png)
+
 这里选择玩家1的地址，右键选择是什么改写了这个地址。数值变动后，右键出现的汇编代码选择找出代码访问的地址，对这四个玩家进行数值变动后发现出现了四个地址，说明这四个玩家数值变化用的是一个代码，一个变了其他也会跟着变。
 ![img](https://raw.githubusercontent.com/galact-byte/Property/refs/heads/main/CE/Pasted%20image%2020231210231701.png)
 ![img](https://raw.githubusercontent.com/galact-byte/Property/refs/heads/main/CE/Pasted%20image%2020231210231641.png)
+
 选中四个地址后右键选择打开选中地址的分析数据开始观察可以区分敌我的不同之处
 ![img](https://raw.githubusercontent.com/galact-byte/Property/refs/heads/main/CE/Pasted%20image%2020231210231906.png)
+
 然后发现偏移`0014`这里正好能分成两波，记录偏移 *(绿色的是相同的部分就没必要看)*
+
 然后随便选择一个角色，右键选择是什么改写了这个地址，数值变动后，选中这个汇编代码，单击显示反汇编程序
 ![img](https://raw.githubusercontent.com/galact-byte/Property/refs/heads/main/CE/Pasted%20image%2020231211140307.png)
+
 和上面一样，工具里选自动汇编
 ![img](https://raw.githubusercontent.com/galact-byte/Property/refs/heads/main/CE/Pasted%20image%2020231211140412.png)
 然后模板这里选择的是代码注入
+
 ![img](https://raw.githubusercontent.com/galact-byte/Property/refs/heads/main/CE/Pasted%20image%2020231211140553.png)
+
 `cmp`是比较的意思，这里的`[rbx+14]`是四个角色共用的地址，根据上面看到的分为1和2，所以这里通过与1比较来区分敌我。若为真，则跳转到m，`je`指令用于在特定条件下跳转到目标地址，这里比较若等于1就是友军，就跳转到m，`mov`是通用的数据传输指令，这里是把999(单浮点)复制给`[rbx+08]`；若不等于1则执行下面的，`movss`指令在针对`xmm`寄存器的指令，这里会把`xmm0`中的数值传送给地址，然后用`xmm0`中的数值减去地址中的值，最后存储回`xmm0`中，也就是是友军会变为999血，敌人则会变为0
 
 9.靶子射击
